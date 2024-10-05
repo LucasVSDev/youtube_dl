@@ -60,11 +60,13 @@ logo = Image.open(r"images/youtube.png")
 logo = logo.resize((50, 50), Image.Resampling.LANCZOS)
 logo = ImageTk.PhotoImage(logo)
 
-img_logo = Label(frame_cima, image=logo, compound=LEFT, bg=fundo, font=("Ivy 10 bold"), anchor="nw")
+img_logo = Label(
+    frame_cima, image=logo, compound=LEFT, bg=fundo, font=("Ivy 10 bold"), anchor="nw"
+)
 img_logo.place(x=95, y=15)
 
-pesquisa = Image.open(r"images/pesquisa.png")
-pesquisa = pesquisa.resize((35, 35), Image.Resampling.LANCZOS)
+pesquisa = Image.open(r"images/lupa.png")
+pesquisa = pesquisa.resize((30, 30), Image.Resampling.LANCZOS)
 pesquisa = ImageTk.PhotoImage(pesquisa)
 
 img_pesquisa = Label(
@@ -89,6 +91,138 @@ img_nome = Label(
 img_nome.place(x=150, y=27)
 
 # Fundo Pesquisar
+def pesquisar(envet=None):
+    cont_mp4_hd.clear()
+    cont_mp4_sd.clear()
+    cont_mp3.clear()
+
+    global teste
+    teste = e_url.get()
+    status["text"] = ""
+    if (e_url.get()==""):
+        messagebox.showinfo("Status", "Campo Vazio")
+    else:
+        global img
+        frame3.place_forget()
+        yt = YouTube(e_url.get())
+    
+    #Titulo
+
+# ----------------------------------------------------------
+e_url = Entry(frame_cima, width=50, justify="left", relief=SOLID)
+e_url.place(x=60, y=80)
+
+b_pesquisar = Button(
+    frame_cima,
+    text="Pesquisar",
+    width=10,
+    bg=co2,
+    fg=co1,
+    font=("Ivy 9 bold"),
+    relief=RAISED,
+    overrelief=RIDGE,
+    command="",
+)
+b_pesquisar.place(x=390, y=78)
+
+# Operações
+
+l_imagmb = Label(
+    frame_abaixo, image="", compound=LEFT, bg=fundo, font=("Ivy 10 bold"), anchor="nw"
+)
+l_imagmb.place(x=80, y=45)
+
+l_titulob = Label(
+    frame_abaixo,
+    text="",
+    height=2,
+    wraplength=355,
+    compound=LEFT,
+    bg=fundo,
+    fg=co1,
+    font=("Ivy 10 bold"),
+    anchor="nw",
+)
+l_titulob.place(x=80, y=0)
+
+# aqui
+# l_viewsb = Label(frame_baixo, text="", bg=fundo, fg=co1 ,font=('Ivy 8 bold'), anchor='nw')
+# l_viewsb.place(x=10,y=340)
+
+l_timeb = Label(
+    frame_abaixo, text="", bg=fundo, fg=co1, font=("Ivy 8 bold"), anchor="nw"
+)
+l_titulob.place(x=80, y=310)
+
+opcao = Label(
+    frame_abaixo, text="Downloads", font=("Arial Black", 13), bg=fundo, fg=co1
+)
+
+linha_cada = ttk.Separator(frame_abaixo, orient=HORIZONTAL)
+
+hd = Label(frame_abaixo, text="HD - 720p", font=("Arial Black", 9), bg=fundo, fg=co1)
+
+sd = Label(frame_abaixo, text="SD - 360p", font=("Arial Black", 9), bg=fundo, fg=co1)
+
+audio = Label(
+    frame_abaixo, text="MP3 - Audio", font=("Arial Black", 9), bg=fundo, fg=co1
+)
+
+status = Label(
+    frame_abaixo, text="Download Completo", font=("Arial Black", 10), bg=fundo, fg=co1
+)
+
+i_download = Image.open(r"images/video.png")
+i_download = i_download.resize((30, 30), Image.Resampling.LANCZOS)
+i_download = ImageTk.PhotoImage(i_download)
+
+l_download = Button(
+    frame_abaixo,
+    image=i_download,
+    command="",
+    compound=LEFT,
+    bg=fundo,
+    fg=fundo,
+    font=("Ivy 10 bold"),
+    overrelief=RIDGE,
+    activebackground=fundo,
+    bd=0,
+)
+
+i_download1 = Image.open(r"images/video2.png")
+i_download1 = i_download1.resize((30, 30), Image.Resampling.LANCZOS)
+i_download1 = ImageTk.PhotoImage(i_download1)
+
+l_download1 = Button(
+    frame_abaixo,
+    image=i_download1,
+    command="",
+    compound=LEFT,
+    bg=fundo,
+    fg=fundo,
+    font=("Ivy 10 bold"),
+    overrelief=RIDGE,
+    activebackground=fundo,
+    bd=0,
+)
+
+i_download2 = Image.open(r"images/audio.png")
+i_download2 = i_download2.resize((30, 30), Image.Resampling.LANCZOS)
+i_download2 = ImageTk.PhotoImage(i_download2)
+
+l_download2 = Button(
+    frame_abaixo,
+    image=i_download2,
+    command="",
+    compound=LEFT,
+    bg=fundo,
+    fg=fundo,
+    font=("Ivy 10 bold"),
+    overrelief=RIDGE,
+    activebackground=fundo,
+    bd=0,
+)
+
 
 style = ttk.Style()
 style.theme_use("default")
