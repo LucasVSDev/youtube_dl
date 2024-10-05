@@ -1,0 +1,10 @@
+Instale em uma Máquina Vitual Python
+---------------------------
+certifi==2024.8.30
+charset-normalizer==3.3.2
+idna==3.10
+pillow==10.4.0
+pytube==15.0.0
+requests==2.32.3
+urllib3==2.2.3
+--------------------------
