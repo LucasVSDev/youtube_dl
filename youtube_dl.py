@@ -41,7 +41,7 @@ y_cordinate = int((screen_height / 2) - (screen_height / 3))
 
 janela.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
 
-janela.title("Download Youtube")
+janela.title("Youtube")
 
 janela.iconbitmap(r"images/you.ico")
 janela.configure(bg=fundo)
@@ -90,8 +90,9 @@ img_nome = Label(
 )
 img_nome.place(x=150, y=27)
 
+
 # Fundo Pesquisar
-def pesquisar(envet=None):
+def pesquisar(event=None):
     cont_mp4_hd.clear()
     cont_mp4_sd.clear()
     cont_mp3.clear()
@@ -99,14 +100,154 @@ def pesquisar(envet=None):
     global teste
     teste = e_url.get()
     status["text"] = ""
-    if (e_url.get()==""):
+    if e_url.get() == "":
         messagebox.showinfo("Status", "Campo Vazio")
     else:
         global img
         frame3.place_forget()
         yt = YouTube(e_url.get())
-    
-    #Titulo
+
+        # Titulo
+        titulo = yt.title
+        l_titulob["text"] = titulo
+        # --------------------------------------------------------
+        # visualização / Depois Oculta aqui
+        # view = yt.views
+        # l_viewsb["text"] = f"views: {view:,.0f}"
+        # --------------------------------------------------------
+        # Duração do video
+        duracao = str(datetime.timedelta(seconds=yt.length))
+        l_timeb["text"] = "Duração: " + duracao
+        # Imagem do video
+        foto = yt.thumbnail_url
+        img = Image.open(requests.get(foto, stream=True).raw)
+        img = img.resize((375, 250), Image.Resampling.LANCZOS)
+        img = ImageTk.PhotoImage(img)
+
+        l_imagmb["image"] = img
+        # Remover depois de finalizar
+        # frame3.place(x=500, y=400, width=210, height=30)
+        # bar.place(x=10, y=10)
+        # bar["value"] = 10
+        # ------------------------------------------------
+
+        opcao.place(x=550, y=50)
+        linha_cada.place(x=500, y=90, width=200)
+        hd.place(x=515, y=120)
+        sd.place(x=515, y=170)
+        audio.place(x=515, y=220)
+
+        l_download.place(x=650, y=113)
+        l_download1.place(x=650, y=163)
+        l_download2.place(x=650, y=213)
+
+
+# -----------------------------------------------------------
+# Fução Para barra de progresso
+# ------------------------------
+# previousprogress = 0
+def on_progress(stream, chunk, bytes_remaining):
+    previousprogress = 0
+    # config FRAME3 CARREGAMENTO
+    frame3.place(x=500, y=400, width=210, height=30)
+    # global previousprogress
+    total_size = stream.filesize
+    bytes_downloaded = total_size - bytes_remaining
+
+    liveprogress = (int)(bytes_downloaded / total_size * 100)
+
+    if liveprogress > previousprogress:
+        previousprogress = liveprogress
+        print(liveprogress)
+        status["text"] = "Fazendo Download"
+        status.place(x=530, y=320)
+        # config FRAME3 CARREGAMENTO
+        bar.place(x=10, y=10)
+        bar["value"] = liveprogress
+        janela.update_idletasks()
+
+    status["text"] = "Download Completo"
+
+
+# -----------------------------------------------------------
+
+
+# Função Baixar mp3
+def download_mp3():
+
+    frame3.place_forget()
+    bar.place_forget()
+    status.place_forget()
+
+    link = teste
+    url = YouTube(link, on_progress_callback=on_progress)
+    os.chdir(os.path.join(os.path.expanduser("~"), "desktop"))
+    ys = url.streams.get_audio_only()
+    arquivo = ys.download()
+    base, ext = os.path.splitext(arquivo)
+    novoarquivo = base + ".mp3"
+
+    try:
+        os.rename(arquivo, novoarquivo)
+    except:
+        cont_mp3.append(1)
+        print(sum(cont_mp3))
+        novoarquivo = base + f" {sum(cont_mp3)}" + ".mp3"
+        os.rename(arquivo, novoarquivo)
+
+    e_url.delete(0, "end")
+
+    # ------------------------
+
+
+# Função Baixar mp4 hd
+def download_mp4_hd():
+    frame3.place_forget()
+    bar.place_forget()
+    status.place_forget()
+
+    link = teste
+    url = YouTube(link, on_progress_callback=on_progress)
+    os.chdir(os.path.join(os.path.expanduser("~"), "desktop"))
+    ys = url.streams.get_highest_resolution()
+
+    mp4 = ys.download()
+    base, ext = os.path.splitext(mp4)
+    novoarquivo = base + " HD" + ".mp4"
+    try:
+        os.rename(mp4, novoarquivo)
+    except:
+        cont_mp4_hd.append(1)
+        print(sum(cont_mp4_hd))
+        novoarquivo = base + " HD" + f" {sum(cont_mp4_hd)}" + ".mp4"
+        os.rename(mp4, novoarquivo)
+
+    e_url.delete(0, "end")
+
+
+# Função Baixar mp4 sd
+def download_mp4_sd():
+    frame3.place_forget()
+    bar.place_forget()
+    status.place_forget()
+
+    link = teste
+    url = YouTube(link, on_progress_callback=on_progress)
+    os.chdir(os.path.join(os.path.expanduser("~"), "desktop"))
+    ys = url.streams.get_lowest_resolution()
+
+    mp4_sd = ys.download()
+    base, ext = os.path.splitext(mp4_sd)
+    novoarquivo = base + " SD" + ".mp4"
+    try:
+        os.rename(mp4_sd, novoarquivo)
+    except:
+        cont_mp4_sd.append(1)
+        print(sum(cont_mp4_sd))
+        novoarquivo = base + " SD" + f" {sum(cont_mp4_sd)}" + ".mp4"
+        os.rename(mp4_sd, novoarquivo)
+    e_url.delete(0, "end")
+
 
 # ----------------------------------------------------------
 e_url = Entry(frame_cima, width=50, justify="left", relief=SOLID)
@@ -121,7 +262,7 @@ b_pesquisar = Button(
     font=("Ivy 9 bold"),
     relief=RAISED,
     overrelief=RIDGE,
-    command="",
+    command=pesquisar,
 )
 b_pesquisar.place(x=390, y=78)
 
@@ -145,10 +286,12 @@ l_titulob = Label(
 )
 l_titulob.place(x=80, y=0)
 
-# aqui
-# l_viewsb = Label(frame_baixo, text="", bg=fundo, fg=co1 ,font=('Ivy 8 bold'), anchor='nw')
-# l_viewsb.place(x=10,y=340)
-
+# aqui --------------------------------------------------------------------------------
+# l_viewsb = Label(
+#     frame_abaixo, text="", bg=fundo, fg=co1, font=("Ivy 8 bold"), anchor="nw"
+# )
+# l_viewsb.place(x=10, y=340)
+# --------------------------------------------------------------------------------
 l_timeb = Label(
     frame_abaixo, text="", bg=fundo, fg=co1, font=("Ivy 8 bold"), anchor="nw"
 )
@@ -179,7 +322,7 @@ i_download = ImageTk.PhotoImage(i_download)
 l_download = Button(
     frame_abaixo,
     image=i_download,
-    command="",
+    command=download_mp4_hd,
     compound=LEFT,
     bg=fundo,
     fg=fundo,
@@ -196,7 +339,7 @@ i_download1 = ImageTk.PhotoImage(i_download1)
 l_download1 = Button(
     frame_abaixo,
     image=i_download1,
-    command="",
+    command="download_mp4_sd",
     compound=LEFT,
     bg=fundo,
     fg=fundo,
@@ -213,7 +356,7 @@ i_download2 = ImageTk.PhotoImage(i_download2)
 l_download2 = Button(
     frame_abaixo,
     image=i_download2,
-    command="",
+    command=download_mp3,
     compound=LEFT,
     bg=fundo,
     fg=fundo,
@@ -230,5 +373,5 @@ style.configure("black.Horizontal.TProgressbar", background="#00e676")
 style.configure("TProgressbar", thickness=6)
 bar = Progressbar(frame3, length=190, style="black.Horizontal.TProgressbar")
 
-janela.bind("<Return>")
+janela.bind("<Return>", pesquisar)
 janela.mainloop()
